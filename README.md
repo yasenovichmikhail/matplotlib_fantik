@@ -1,1 +1,1 @@
-# data analysis for fantik project with matplotlib, seaborn, pandas 
+**Data analysis for fantik project with matplotlib, seaborn, pandas** 
