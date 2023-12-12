@@ -1,0 +1,22 @@
+select_rewards = """select date_trunc('day', actual_date), count(*)
+from tm_user_rewards
+where date_trunc('day', actual_date) > to_date('2023/11/30', 'yyyy/mm/dd')
+group by date_trunc('day', actual_date)
+order by date_trunc('day', actual_date) desc;"""
+
+rewards_december = pd.read_sql(select_rewards, conn)
+timeFmt = mdates.DateFormatter('%d')
+# months = mdates.MonthLocator()
+days = mdates.DayLocator()
+fig, ax = plt.subplots(figsize=(12, 8), layout='constrained')
+# ax.xaxis.set_major_locator(months)
+ax.xaxis.set_major_formatter(timeFmt)
+ax.xaxis.set_major_locator(days)
+plt.xlabel("December", fontsize=14, fontweight="bold")
+plt.ylabel("Rewards", fontsize=14, fontweight="bold")
+plt.title("Rewards by day", fontsize=14, fontweight="bold")
+# plt.locator_params (axis='x', nbins= 30 )
+plt.locator_params (axis='y', nbins= 20 )
+plt.grid(True)
+plt.plot(rewards_december['date_trunc'], rewards_december['count'], '*-.g', alpha=0.7, lw=1, mec='r', mew=2, ms=5)
+plt.show()
