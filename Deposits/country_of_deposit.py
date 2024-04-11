@@ -1,4 +1,4 @@
-from main_import import *
+from config import *
 
 def countries_of_deposit(country_deposit_by_month):
     fig = plt.figure(figsize = (12, 8))
