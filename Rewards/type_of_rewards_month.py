@@ -1,4 +1,4 @@
-from main_import import *
+from config import *
 
 def type_of_reward(reward_type_month):
     explode = []
