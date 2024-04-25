@@ -2,11 +2,11 @@ from config import *
 
 
 def users_by_day(users_month):
-    timeFmt = mdates.DateFormatter('%d')
+    time_format = mdates.DateFormatter('%d')
     # months = mdates.MonthLocator()
     # days = mdates.DayLocator()
     fig, ax = plt.subplots(figsize=(12, 8), layout='constrained')
-    ax.xaxis.set_major_formatter(timeFmt)
+    ax.xaxis.set_major_formatter(time_format)
     ax.xaxis.set_major_locator(ticker.AutoLocator())
     ax.yaxis.set_major_locator(ticker.AutoLocator())
     plt.ylabel("Users", fontsize=14, fontweight="bold")
@@ -18,12 +18,5 @@ def users_by_day(users_month):
     plt.show()
 
 
-select_users_by_day = """select date_trunc('day', actual_date), count(distinct user_name)
-from tm_users
-where date_trunc('day', actual_date) between '2024-03-31 23:59:59' and '2024-04-30 23:59:59'
-group by date_trunc('day', actual_date)
-order by date_trunc('day', actual_date) desc"""
-
-users_by_day_april = pd.read_sql(select_users_by_day, conn)
-users_by_day(users_by_day_april)
-users_by_day_april.describe().round()
+users_by_month = pd.read_sql(select_users_by_day, conn)
+users_by_day(users_by_month)
