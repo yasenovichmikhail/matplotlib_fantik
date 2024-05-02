@@ -22,5 +22,5 @@ def app_coins_month(app_deposit_month, text_value):
     plt.show()
 
 
-app_coins = pd.read_sql(select_app_coins_month, conn)
+app_coins = pd.read_sql(SELECT_APP_COINS_MONTH, CONN)
 app_coins_month(app_coins, 'coins')

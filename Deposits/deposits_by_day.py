@@ -14,5 +14,5 @@ def deposits_by_day(deposit_by_day):
     plt.show()
 
 
-df_deposits_by_day = pd.read_sql(select_deposits_by_day, conn)
+df_deposits_by_day = pd.read_sql(SELECT_DEPOSITS_BY_DAY, CONN)
 deposits_by_day(df_deposits_by_day)

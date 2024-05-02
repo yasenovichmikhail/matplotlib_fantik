@@ -28,7 +28,7 @@ def type_of_deposits(deposits_month):
 
     total_price_month = 0
     for key, value in total_dict_month.items():
-        for coin, price in prices.items():
+        for coin, price in PRICES.items():
             if int(key) == int(coin):
                 total_price_month += int(value) * float(price)
 
@@ -46,5 +46,5 @@ def type_of_deposits(deposits_month):
     plt.show()
 
 
-type_deposit_month = pd.read_sql(select_type_deposits_by_month, conn)
+type_deposit_month = pd.read_sql(SELECT_TYPE_DEPOSITS_BY_MONTH, CONN)
 type_of_deposits(type_deposit_month)

@@ -22,5 +22,5 @@ def type_of_orders(order_type_month):
     plt.show()
 
 
-orders_type = pd.read_sql(select_type_of_orders, conn)
+orders_type = pd.read_sql(SELECT_TYPE_OF_ORDERS, CONN)
 type_of_orders(orders_type)

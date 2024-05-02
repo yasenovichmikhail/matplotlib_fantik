@@ -8,7 +8,7 @@ def countries_of_deposit(country_deposit_by_month):
 
     top_countries_list = []
     for i in country_deposit_by_month['country_iso']:
-        for key, value in countries.items():
+        for key, value in COUNTRIES.items():
             if i == key:
                 top_countries_list.append(value)
 
@@ -22,5 +22,5 @@ def countries_of_deposit(country_deposit_by_month):
     plt.show()
 
 
-top_country_deposit = pd.read_sql(select_top_country_deposits_month, conn)
+top_country_deposit = pd.read_sql(SELECT_TOP_COUNTRY_DEPOSITS_MONTH, CONN)
 countries_of_deposit(top_country_deposit)

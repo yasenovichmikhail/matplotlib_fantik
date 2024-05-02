@@ -23,5 +23,5 @@ def type_of_rewards(reward_type_month):
     plt.show()
 
 
-df_type_of_reward = pd.read_sql(select_type_rewards, conn)
+df_type_of_reward = pd.read_sql(SELECT_TYPE_REWARDS, CONN)
 type_of_rewards(df_type_of_reward)
