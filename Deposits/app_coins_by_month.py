@@ -18,7 +18,7 @@ def app_coins_month(app_deposit_month, text_value):
         cmap='Set3',
         figsize=(12, 8),
         explode=explode,
-        startangle=45
+        startangle=30
     )
     plt.ylabel("%", fontsize=20, fontweight="bold")
     plt.legend(
