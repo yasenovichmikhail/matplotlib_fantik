@@ -46,5 +46,6 @@ def type_of_deposits(deposits_month):
     plt.show()
 
 
-type_deposit_month = pd.read_sql(SELECT_TYPE_DEPOSITS_BY_MONTH, CONN)
-type_of_deposits(type_deposit_month)
+if __name__ == '__main__':
+    type_deposit_month = pd.read_sql(SELECT_TYPE_DEPOSITS_BY_MONTH, CONN)
+    type_of_deposits(type_deposit_month)
