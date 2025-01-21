@@ -38,17 +38,19 @@ def get_all_revenue(date_from, date_to, pattern, package_name, conn):
     all_sum_dict = dict(zip(currency_lst, all_sum_lst))
     for key, value in all_sum_dict.items():
         if key != 'USD':
-            price = get_exchange(usd_converter(key, round(value, 0)))
-            print(price)
+            price = get_exchange(usd_converter(key, value))
+            print(f'{value} {key} = {price}$')
             total += price
         else:
-            print(int(round(value, 0)))
-            total += int(round(value, 0))
-    print(f'Total amount: {total}')
+            price = round(float(value), 2)
+            total += price
+            print(f'{price} USD = {price}$')
+    total = round(total, 2)
+    print(f'Total amount: {total}$')
 
 
 get_all_revenue(date_from=GENERATE_DATE1,
                 date_to=GENERATE_DATE2,
-                pattern='google-play',
+                pattern='not%%20set',
                 package_name=PACKAGE_NAME_FANTIK,
                 conn=CONN)

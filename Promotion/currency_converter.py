@@ -58,16 +58,15 @@ def get_exchange(data):
     currency_container = data.findAll('p', class_='sc-814e9b01-1 hTlWRC')
     for price in currency_container:
         usd = price.text.split()[0]
-        usd = usd.split('.')[0]
         if len(usd) > 3:
             usd = usd.replace(',', '')
-            return int(usd)
+            return round(float(usd), 2)
         else:
-            return int(usd)
+            return round(float(usd), 2)
 
 
 def main():
-    get_exchange(usd_converter(convert_from='RUB', amount=3665600))
+    get_exchange(usd_converter(convert_from='AED', amount=5000.89))
 
 
 if __name__ == '__main__':
