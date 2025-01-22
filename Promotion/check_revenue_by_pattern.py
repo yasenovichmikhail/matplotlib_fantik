@@ -1,8 +1,6 @@
-from sqlalchemy import text
 from config import *
 import pandas as pd
 from Promotion.currency_converter import get_exchange, usd_converter
-from pprint import pprint
 
 
 def get_all_purchases_by_country(date_from, date_to, pattern, package_name, conn):
@@ -52,4 +50,4 @@ get_all_revenue(date_from=GENERATE_DATE1,
                 date_to=GENERATE_DATE2,
                 pattern='E_C_P',
                 package_name=PACKAGE_NAME_FANTIK,
-                conn=CONN)
+                conn=DB_PROD_CONNECTION)
