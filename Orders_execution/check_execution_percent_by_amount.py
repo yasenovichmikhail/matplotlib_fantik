@@ -16,8 +16,8 @@ def select_all_orders_id(action_type, action_amount, limit, conn=DB_PROD_CONNECT
     try:
         result = pd.read_sql(select_all_orders, conn)
         return result
-    except OperationalError as e:
-        print(f"The error '{e}' occurred")
+    except Exception as e:
+        print(f"The error {e} occurred")
 
 
 def get_all_order_id(action_type, action_amount, limit, conn):
@@ -78,22 +78,30 @@ def main(action_type, action_amount, limit, conn):
                                      action_amount=action_amount,
                                      limit=limit,
                                      conn=conn)
-    for order_id in all_orders_id:
-        diff = get_difference(metrics_before=fetch_metrics_before(order_id=order_id,
-                                                                  conn=conn),
-                              metrics_after=fetch_metrics_after(order_id=order_id,
-                                                                conn=conn))
-        execution_percent = calculate_execution_percent(diff=diff,
-                                                        action_amount=action_amount)
-        percent_list.append(execution_percent)
-        print(f'order_id: {order_id}: ordered - {action_amount}, completed - {diff}. '
-              f'The execution percent is {execution_percent}%')
-    average_percent = sum(percent_list) / len(percent_list)
-    print(f'The average percent is {round(average_percent, 2)}')
+
+    try:
+        for order_id in all_orders_id:
+            diff = get_difference(metrics_before=fetch_metrics_before(order_id=order_id,
+                                                                      conn=conn),
+                                  metrics_after=fetch_metrics_after(order_id=order_id,
+                                                                    conn=conn))
+            execution_percent = calculate_execution_percent(diff=diff,
+                                                            action_amount=action_amount)
+            if execution_percent < 110:
+                percent_list.append(execution_percent)
+                print(f'order_id: {order_id}: ordered - {action_amount}, completed - {diff}. '
+                      f'The execution percent is {execution_percent}%')
+            else:
+                continue
+        average_percent = sum(percent_list) / len(percent_list)
+        print(f'The average percent is {round(average_percent, 2)}')
+    except ZeroDivisionError as e:
+        print(f"The error {e} occurred")
+        print(f'There are no orders with action_type = {action_type} and action_amount = {action_amount}')
 
 
 if __name__ == '__main__':
-    main(action_type=1,
-         action_amount=200,
-         limit=50,
+    main(action_type=2,
+         action_amount=5000,
+         limit=100,
          conn=DB_PROD_CONNECTION)
