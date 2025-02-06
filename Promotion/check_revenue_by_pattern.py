@@ -4,18 +4,20 @@ from Promotion.currency_converter import get_exchange, usd_converter
 
 
 def get_all_purchases_by_country(date_from, date_to, pattern, package_name, conn):
-    select_all_purchases = f"""select tcp.currency_iso, SUM(price)
-    from tm_consumable_purchases tcp
-    where transaction_date between '{date_from}' AND '{date_to}'
-    and tcp.user_id in (select user_id
-                      from tm_logons
-                      where install_referrer
-                          like '%%{pattern}%%'
-                        and package_name = '{package_name}')
-    and payment_status_id = 2
-    and currency_iso != 'HUF'
-    and tcp.consumable_product_id not in (62, 63, 64, 65, 66, 67, 68)
-    group by tcp.currency_iso"""
+    select_all_purchases = f"""with all_users as (select user_id
+                   from tm_logons
+                   where install_referrer
+                       like '%%{pattern}%%'
+                     and logon_date between '{date_from}' AND '{date_to}')
+select currency_iso, sum(price) sum
+from tm_consumable_purchases tcp
+         join all_users on all_users.user_id = tcp.user_id
+where transaction_date between '{date_from}' AND '{CURRENT_TIME}'
+  and payment_status_id = 2
+  and bundle_identifier = '{package_name}'
+  and tcp.consumable_product_id not in (62, 63, 64, 65, 66, 67, 68)
+  and currency_iso != 'HUF'
+ group by currency_iso"""
 
     try:
         result = pd.read_sql(select_all_purchases, conn)
