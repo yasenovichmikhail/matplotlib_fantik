@@ -13,6 +13,7 @@ def get_all_purchases_by_country(date_from, date_to, pattern, package_name, conn
                           like '%%{pattern}%%'
                         and package_name = '{package_name}')
     and payment_status_id = 2
+    and currency_iso != 'HUF'
     and tcp.consumable_product_id not in (62, 63, 64, 65, 66, 67, 68)
     group by tcp.currency_iso"""
 

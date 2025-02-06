@@ -4,7 +4,7 @@ import pandas as pd
 
 def get_all_app_purchases_by_country(date_from, date_to, app_id, conn):
     select_all_purchases = f"""select tu.country_iso,
-        SUM(price) cnt
+        SUM(price)
     from tm_consumable_purchases tcp
              join tm_consumable_products t on t.consumable_product_id = tcp.consumable_product_id
              join tm_users tu on tcp.user_id = tu.user_id
@@ -12,7 +12,7 @@ def get_all_app_purchases_by_country(date_from, date_to, app_id, conn):
         and t.app_settings_id = {app_id}
         and payment_status_id = 2
     group by tu.country_iso
-    order by cnt desc"""
+    order by sum desc"""
 
     try:
         result = pd.read_sql(select_all_purchases, conn)
@@ -28,12 +28,13 @@ def get_all_revenue(date_from, date_to, app_id, conn):
                                                app_id=app_id,
                                                conn=conn).to_dict(orient='list')
     currency_lst = df_dict['country_iso']
-    all_sum_lst = df_dict['cnt']
+    all_sum_lst = df_dict['sum']
     all_sum_dict = dict(zip(currency_lst, all_sum_lst))
     for key, value in all_sum_dict.items():
         print(f"{key}: {value}$")
         price = float(value)
         total += price
+    total = round(total, 2)
     print(f'Total amount: {total}$')
 
 

@@ -36,4 +36,4 @@ def main(date1, date2, conn):
 
 
 if __name__ == '__main__':
-    main(DATE1, DATE2, CONN)
+    main(DATE1, DATE2, DB_PROD_CONNECTION)

@@ -1,7 +1,5 @@
 import requests
 from bs4 import BeautifulSoup as bs
-from dateutil.parser import parse
-from pprint import pprint
 
 
 def usd_converter(convert_from, amount, convert_to='USD'):
@@ -13,7 +11,7 @@ def usd_converter(convert_from, amount, convert_to='USD'):
 
 
 def get_exchange(data):
-    currency_container = data.findAll('p', class_='sc-814e9b01-1 hTlWRC')
+    currency_container = data.findAll('p', class_='sc-262833c5-1 fOUdoA')
     for price in currency_container:
         usd = price.text.split()[0]
         if len(usd) > 3:
