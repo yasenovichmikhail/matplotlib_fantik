@@ -4,29 +4,34 @@ from Promotion.currency_converter import get_exchange, usd_converter
 
 
 def get_all_ios_purchases_by_country(date_from, date_to, package_name, conn):
-    select_all_purchases = f"""select case
-               when tu.country_iso = 'AT' then 'Austria'
-               when tu.country_iso = 'DE' then 'Germany'
-               when tu.country_iso = 'FR' then 'France'
-               when tu.country_iso = 'PT' then 'Portugal'
-               when tu.country_iso = 'GB' then 'Great Britain'
-               when tu.country_iso = 'NO' then 'Norway'
-               when tu.country_iso = 'AE' then 'United Arab Emirates'
-               when tu.country_iso = 'IE' then 'Ireland'
-               when tu.country_iso = 'BE' then 'Belgium'
-               when tu.country_iso = 'NL' then 'Netherlands'
-               when tu.country_iso = 'US' then 'USA'
-               when tu.country_iso = 'IL' then 'Israel'
-               end as country_iso,
-           tcp.currency_iso,
-           SUM(price) sum
-    from tm_consumable_purchases tcp
-             join tm_users tu on tcp.user_id = tu.user_id
-    where transaction_date between '{date_from}' AND '{date_to}'
-      and tcp.bundle_identifier = '{package_name}'
-      and payment_status_id = 2
-    group by tu.country_iso, tcp.currency_iso
-    order by sum desc"""
+    select_all_purchases = f"""with all_users as (select user_id
+                           from tm_logons
+                           where logon_date between '{date_from}' AND '{date_to}')
+        select case
+                   when tu.country_iso = 'AT' then 'Austria'
+                   when tu.country_iso = 'DE' then 'Germany'
+                   when tu.country_iso = 'FR' then 'France'
+                   when tu.country_iso = 'PT' then 'Portugal'
+                   when tu.country_iso = 'GB' then 'Great Britain'
+                   when tu.country_iso = 'NO' then 'Norway'
+                   when tu.country_iso = 'AE' then 'United Arab Emirates'
+                   when tu.country_iso = 'IE' then 'Ireland'
+                   when tu.country_iso = 'BE' then 'Belgium'
+                   when tu.country_iso = 'NL' then 'Netherlands'
+                   when tu.country_iso = 'US' then 'USA'
+                   when tu.country_iso = 'IL' then 'Israel'
+                   end as country_iso,
+               tcp.currency_iso,
+               SUM(price) sum
+        from tm_consumable_purchases tcp
+                 join tm_users tu on tcp.user_id = tu.user_id
+                 join all_users on all_users.user_id = tcp.user_id
+        where transaction_date between '{date_from}' AND '{CURRENT_TIME}'
+          and tcp.bundle_identifier = '{package_name}'
+          and payment_status_id = 2
+        --   and country_iso in ('AT', 'DE', 'FR', 'PT', 'GB', 'NO', 'AE')
+        group by tu.country_iso, tcp.currency_iso
+        order by sum desc"""
 
     try:
         result = pd.read_sql(select_all_purchases, conn)
@@ -51,7 +56,6 @@ def get_all_revenue(date_from, date_to, package_name, conn):
     for i in range(len(currency_lst)):
         tmp_tuple = (currency_lst[i], all_sum_lst[i])
         new_list_of_tuples.append(tmp_tuple)
-
     for pair in new_list_of_tuples:
         price = get_exchange(usd_converter(*pair))
         price = round(price, 2)
@@ -65,7 +69,7 @@ def get_all_revenue(date_from, date_to, package_name, conn):
     sorted_dict = sorted(total_dict.items(), key=lambda item: item[1], reverse=True)
     sorted_total_dict = dict(sorted_dict)
     for key, value in sorted_total_dict.items():
-        print(f"{key} - {value}$")
+        print(f"{key} - {round(value, 2)}$")
 
     total = round(sum(exchange_prices), 2)
     print(f'Total amount: {total}$')
